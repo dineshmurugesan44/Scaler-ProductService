@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductController {
+
+
     @GetMapping("/products/{id}")
     public void getProductById(@PathVariable("id") Integer id) {
 
@@ -13,16 +15,22 @@ public class ProductController {
 
     }
     @GetMapping("/products")
-    public void getAllProducts(){
+    public void getAllProducts() {
 
     }
     @PutMapping("/products/{id}")
-    public void updateProductById(@PathVariable("id") Integer id){
+    public void UpdateProduct(@PathVariable("id") Integer id) {
 
     }
-    @DeleteMapping("/products/{id}")
-    public void deleteProductById(@PathVariable("id") Integer id){
+
+    @DeleteMapping("/products")
+    public void deleteProduct() {
 
     }
+
+
+
+
+
 
 }

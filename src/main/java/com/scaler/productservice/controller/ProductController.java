@@ -1,6 +1,7 @@
 package com.scaler.productservice.controller;
 
 import com.scaler.productservice.dto.CreateProductRequestDto;
+import com.scaler.productservice.exception.ProductNotFoundException;
 import com.scaler.productservice.model.Product;
 import com.scaler.productservice.service.FakeStoreProductService;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,23 @@ public class ProductController {
 
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable("id") Integer id) {
+    public Product getProductById(@PathVariable("id") Integer id) throws ProductNotFoundException {
         // validations
-        if(id == null) {
-            throw new IllegalArgumentException("id cannot be null");
+        if(id == 10000) {
+            throw new IllegalArgumentException("id cannot be 10000");
         }
 
-        return service.getProductById(id);
+        //product not found exception // CREATE OUR CUSTOM EXCEPTION.
+        Product product = service.getProductById(id); // service = new SelfProductService()
+        if (product == null) {
+            throw new ProductNotFoundException("Product not found");
+        }
 
+        return product;
     }
+
+
+
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
         //validations
@@ -43,6 +52,9 @@ Body (actual data, like List<Product>)
 Status Code (e.g., 200 OK, 404 Not Found)
          */
         List<Product> products = service.getAllProducts();
+        // throwing run time exception to checking:
+        // -> creating own exception : throw new RuntimeException();
+
         return ResponseEntity.ok(products); //http status code is 200
 
         /*

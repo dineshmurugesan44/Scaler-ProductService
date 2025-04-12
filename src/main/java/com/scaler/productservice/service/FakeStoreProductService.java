@@ -11,15 +11,15 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class FakeStoreProductService {
+@Service("fakeStoreProductService")
+public class FakeStoreProductService implements ProductService {
 
     private RestTemplate restTemplate;
 
     public FakeStoreProductService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-
+    @Override
     public Product getProductById(Integer id) {
 
         Product product = new Product();
@@ -45,6 +45,7 @@ public class FakeStoreProductService {
 
         return product;
     }
+
     private Product convertFakeStoreResponseToProduct(FakeStoreResponseDTO response) {
         Product product = new Product();
         Category category = new Category();
@@ -58,6 +59,7 @@ public class FakeStoreProductService {
 
         return product;
     }
+    @Override
     public List<Product> getAllProducts() {
         List<Product> response = new ArrayList<>();  // Create an empty list
         // Fetch all products from API and add them to the list
@@ -78,6 +80,8 @@ public class FakeStoreProductService {
         return response;
 
     }
+
+    @Override
 
     public Product createProduct(String title, String imageURL, String catTitle, String description) {
         Product response = new Product();

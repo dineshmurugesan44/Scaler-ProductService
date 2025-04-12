@@ -4,6 +4,8 @@ import com.scaler.productservice.dto.CreateProductRequestDto;
 import com.scaler.productservice.exception.ProductNotFoundException;
 import com.scaler.productservice.model.Product;
 import com.scaler.productservice.service.FakeStoreProductService;
+import com.scaler.productservice.service.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,10 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    private FakeStoreProductService service;
+    private ProductService service;
 
-    public ProductController(FakeStoreProductService inputService) {
+    public ProductController(@Qualifier("selfProductService") ProductService inputService) {
+
         this.service = inputService;
     }
 

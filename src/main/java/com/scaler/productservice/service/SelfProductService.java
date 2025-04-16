@@ -23,10 +23,23 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product getProductById(Integer id) {
+        System.out.println("Inside getProductById.....");
         //select * from products where id = inputId //instead pf we can use jpa
        Optional<Product> response = productRepo.findById(id);
+        if (!response.isPresent()) {
+            throw new IllegalArgumentException("Product not found");
+        }
+        System.out.println("Fetched product : " + response);
 
-       return response.orElse(null);
+        /**
+         * some sample test code below to test CAT REpo.
+         */
+        List<Category> categories = categoryRepo.findAll();
+        System.out.println("Fetched List of Categories....");
+
+        List<Product> productList = categories.get(0).getProducts();
+
+        return response.get();
     }
 
     @Override

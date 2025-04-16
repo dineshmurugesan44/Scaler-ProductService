@@ -4,6 +4,7 @@ import com.scaler.productservice.model.Category;
 import com.scaler.productservice.model.Product;
 import com.scaler.productservice.repositary.CategoryRepo;
 import com.scaler.productservice.repositary.ProductRepo;
+import com.scaler.productservice.repositary.projection.ProductProjection;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,6 +31,9 @@ public class SelfProductService implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
+
+        //ProductProjection response = productRepo.getProductNameByTitle("phone samsung");
+        //System.out.println("Fetched product : " + response.getDescription()+ " " + response.getTitle());
         return productRepo.findAll(); //return all product
 
     }

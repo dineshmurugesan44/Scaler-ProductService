@@ -81,9 +81,10 @@
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>11.7.1</version>
+            <artifactId>flyway-mysql</artifactId>
+            <version>10.11.1</version>
         </dependency>
+
     </dependencies>
 
     <build>

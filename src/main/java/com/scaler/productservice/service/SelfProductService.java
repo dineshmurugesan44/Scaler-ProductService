@@ -5,6 +5,11 @@ import com.scaler.productservice.model.Product;
 import com.scaler.productservice.repositary.CategoryRepo;
 import com.scaler.productservice.repositary.ProductRepo;
 import com.scaler.productservice.repositary.projection.ProductProjection;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,7 +30,7 @@ public class SelfProductService implements ProductService {
     public Product getProductById(Integer id) {
         System.out.println("Inside getProductById.....");
         //select * from products where id = inputId //instead pf we can use jpa
-       Optional<Product> response = productRepo.findById(id);
+        Optional<Product> response = productRepo.findById(id);
         if (!response.isPresent()) {
             throw new IllegalArgumentException("Product not found");
         }
@@ -50,49 +55,36 @@ public class SelfProductService implements ProductService {
         return productRepo.findAll(); //return all product
 
     }
-
     @Override
     public Product createProduct(String title, String imageURL, String catTitle, String description) {
         //Step1:
-        /*This is your internal function to make sure:
-
-        None of the fields are null/empty
-
-        Possibly check string length or format*/
         validateInputRequest(title, imageURL, catTitle, description);
-        //Steo2:
 
+        // Step2:
         Product product = new Product();
-        product.setTitle(title); // From Postman
-        product.setImageURL(imageURL); // From Postman
-        product.setDescription(description); // From Postman
+        product.setImageURL(imageURL);
+        product.setTitle(title);
         product.setCreatedAt(new Date());
         product.setUpdatedAt(new Date());
+        product.setDescription(description);
 
-        Optional<Category> existingCategoryOptional = categoryRepo.findByTitle(catTitle);
-
-        Category category;
-        if (existingCategoryOptional.isPresent()) {
-            // ✅ Category already exists — reuse it
-            category = existingCategoryOptional.get();
-        } else {
-            // ❌ Not found — create and save a new one
-            category = new Category();
+        // Step3: check if cat exists in the DB
+        Optional<Category> existingCategory = categoryRepo.findByTitle(catTitle);
+        if (existingCategory.isEmpty()) {
+            Category category = new Category();
             category.setTitle(catTitle);
-            category.setCreatedAt(new Date()); // Optional: Set timestamps if not done automatically
-            category.setUpdatedAt(new Date());
-            category = categoryRepo.save(category); // Persist new category
+            product.setCategory(category);
+        } else {
+            product.setCategory(existingCategory.get());
         }
 
-        // Step 4: Set category to the product
-        product.setCategory(category);
-
-        // Step 5: Save product to DB
-        Product savedProduct = productRepo.save(product);
-
-        // Step 6: Return saved product (with ID, timestamps, and category)
-        return savedProduct;
+        // Finally save to the DB.
+        Product response = productRepo.save(product);
+        return response;
     }
+
+
+
 
 
 
@@ -103,4 +95,3 @@ public class SelfProductService implements ProductService {
         }
     }
 }
-

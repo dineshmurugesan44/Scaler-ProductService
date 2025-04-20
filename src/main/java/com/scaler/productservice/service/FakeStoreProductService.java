@@ -1,35 +1,31 @@
 package com.scaler.productservice.service;
 
-import com.scaler.productservice.dto.CategoryRequestDTO;
 import com.scaler.productservice.dto.FakeStoreResponseDTO;
 import com.scaler.productservice.model.Category;
 import com.scaler.productservice.model.Product;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
-
     private RestTemplate restTemplate;
 
     public FakeStoreProductService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
     @Override
     public Product getProductById(Integer id) {
-
         Product product = new Product();
 
-
         // 1. Call Fakestore API --> Use RestTemplate.
-
         ResponseEntity<FakeStoreResponseDTO> fakeStoreResponse =
-        restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, FakeStoreResponseDTO.class);
-
+                restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, FakeStoreResponseDTO.class);
 
         // 2. Get the response
         FakeStoreResponseDTO response = fakeStoreResponse.getBody();
@@ -37,12 +33,8 @@ public class FakeStoreProductService implements ProductService {
             throw new IllegalArgumentException("FakeStoreProduct not found!!");
         }
 
-
-
         //3. Convert the response to product model
         product = convertFakeStoreResponseToProduct(response);
-
-
         return product;
     }
 
@@ -59,57 +51,41 @@ public class FakeStoreProductService implements ProductService {
 
         return product;
     }
+
     @Override
     public List<Product> getAllProducts() {
-        List<Product> response = new ArrayList<>();  // Create an empty list
-        // Fetch all products from API and add them to the list
-
-        // 1. Call Fakestore API --> Use RestTemplate.
-
-        //rest tenplate is external 3rd party library. to make http call
-
+        List<Product> response = new ArrayList<>();
         ResponseEntity<FakeStoreResponseDTO[]> fakeStoreProducts =
                 restTemplate.getForEntity("https://fakestoreapi.com/products", FakeStoreResponseDTO[].class);
 
-        // 2. Get the response
-        //3. Convert the response to product model
-        for(FakeStoreResponseDTO fakeStoreDTO : fakeStoreProducts.getBody() ) {
+        System.out.println("Status code: " + fakeStoreProducts.getStatusCode());
+        // next step:
+        for (FakeStoreResponseDTO fakeStoreDTO : fakeStoreProducts.getBody()) {
             response.add(convertFakeStoreResponseToProduct(fakeStoreDTO));
         }
 
         return response;
-
     }
 
     @Override
-
     public Product createProduct(String title, String imageURL, String catTitle, String description) {
-        Product response = new Product();
-
-        //CREATING FAKESTORE REQUEST BODY TO GIVE DATA.
+        Product response;
 
         FakeStoreResponseDTO requestBody = new FakeStoreResponseDTO();
-        requestBody.setTitle(catTitle);
+        requestBody.setCategory(catTitle);
         requestBody.setDescription(description);
         requestBody.setTitle(title);
         requestBody.setImage(imageURL);
 
+        ResponseEntity<FakeStoreResponseDTO> fakeStoreResponse =
+                restTemplate.postForEntity("https://fakestoreapi.com/products", requestBody, FakeStoreResponseDTO.class);
 
-
-        // 1. Call Fakestore API --> Use RestTemplate.
-        ResponseEntity <FakeStoreResponseDTO> fakeStoreResponse =
-        restTemplate.postForEntity("https://fakestoreapi.com/products", requestBody, FakeStoreResponseDTO.class);
-
-        //STATUS CODE
         System.out.println("Status code: " + fakeStoreResponse.getStatusCode());
 
-        //covert
         response = convertFakeStoreResponseToProduct(fakeStoreResponse.getBody());
-
-
         return response;
-
     }
+
 }
 
 /**

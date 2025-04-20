@@ -74,12 +74,6 @@ return ResponseEntity.ok(products); 204 no content
     }
     @PostMapping("/products")
     public Product createProduct(@RequestBody CreateProductRequestDto request) {
-        /*
-    private String title;
-    private String imageURL;
-    private String description;
-    private CategoryRequestDTO category;
-         */
         // you can do validations
         if (request.getDescription() == null) {
             throw new IllegalArgumentException("Description cannot be null");
@@ -88,12 +82,8 @@ return ResponseEntity.ok(products); 204 no content
             throw new IllegalArgumentException("Title cannot be null");
         }
 
-        return service.createProduct(request.getTitle(), request.getImageURL(),
-        request.getCategory().getTitle(), request.getDescription());
-
-
-
-
+        return service.createProduct(request.getTitle(), request.getImageURL(), request.getCategory().getTitle(),
+                request.getDescription());
     }
 
 

@@ -1,15 +1,14 @@
 package com.scaler.productservice.service;
 
 import com.scaler.productservice.model.Product;
-
 import java.util.List;
+import org.springframework.data.domain.Page;
 
-/***
- * this ia an interface
+
+/**
+ * This is an interface for my ProductService.
  */
-
 public interface ProductService {
-
     Product getProductById(Integer id);
 
     List<Product> getAllProducts();

@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Entity
 
-public class Category extends BaseModel {
+public class Category extends BaseModel implements Serializable {
     private String title;
 
 

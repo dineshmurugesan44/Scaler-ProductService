@@ -68,7 +68,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product createProduct(String title, String imageURL, String catTitle, String description) {
+    public Product createProduct(String title, String imageURL, String catTitle, String description,String createdByUserName) {
         Product response;
 
         FakeStoreResponseDTO requestBody = new FakeStoreResponseDTO();
@@ -84,6 +84,12 @@ public class FakeStoreProductService implements ProductService {
 
         response = convertFakeStoreResponseToProduct(fakeStoreResponse.getBody());
         return response;
+    }
+
+    @Override
+    public Page<Product> getPaginatedProducts(int pageNo, int pageSize) {
+        // dummy implementation.
+        return null;
     }
 
 }

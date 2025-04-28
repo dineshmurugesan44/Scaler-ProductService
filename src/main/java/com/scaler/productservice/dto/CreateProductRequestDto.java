@@ -14,4 +14,5 @@ public class CreateProductRequestDto {
 
 
     private CategoryRequestDTO category;
+    private String createdByUserName;
 }

@@ -6,6 +6,9 @@ import com.scaler.productservice.model.Product;
 import com.scaler.productservice.service.FakeStoreProductService;
 import com.scaler.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,7 @@ public class ProductController {
 
 
     @GetMapping("/products/{id}")
+    @Cacheable(value = "product", key = "#id")
     public Product getProductById(@PathVariable("id") Integer id) throws ProductNotFoundException {
         // validations
         if(id == 10000) {
@@ -43,6 +47,7 @@ public class ProductController {
 
 
     @GetMapping("/products")
+    @Cacheable(value = "products")
     public ResponseEntity<List<Product>> getAllProducts() {
         //validations
         // Step 2: Call the service layer to get all products
@@ -73,6 +78,7 @@ return ResponseEntity.ok(products); 204 no content
 
     }
     @PostMapping("/products")
+    @CachePut(value = "product", key = "#result.id")
     public Product createProduct(@RequestBody CreateProductRequestDto request) {
         // you can do validations
         if (request.getDescription() == null) {
@@ -83,7 +89,7 @@ return ResponseEntity.ok(products); 204 no content
         }
 
         return service.createProduct(request.getTitle(), request.getImageURL(), request.getCategory().getTitle(),
-                request.getDescription());
+                request.getDescription(),request.getCreatedByUserName());
     }
 
 
@@ -98,6 +104,19 @@ return ResponseEntity.ok(products); 204 no content
     @DeleteMapping("/products")
     public void deleteProduct() {
 
+    }
+
+    //creating pagenated api to return limeited product in a page
+
+    @GetMapping("/products/{pageNo}/{pageSize}")
+    public ResponseEntity<Page<Product>> getPaginatedProducts(@PathVariable("pageNo") int pageNo,
+            @PathVariable("pageSize") int pageSize) {
+
+        Page<Product> products = service.getPaginatedProducts(pageNo, pageSize);
+
+
+
+        return ResponseEntity.ok(products);
     }
 
 
